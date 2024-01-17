@@ -1,6 +1,7 @@
 package com.iaschowrai.JWT.services.impl;
 
 
+import com.iaschowrai.JWT.services.JWTService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,9 +15,11 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Service
-public class JWTServiceImpl {
+public class JWTServiceImpl implements JWTService {
 
-    private String generateToken(UserDetails userDetails){
+
+
+    public String generateToken(UserDetails userDetails){
         return Jwts.builder().setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 *24))
@@ -32,7 +35,7 @@ public class JWTServiceImpl {
         byte[] key = Decoders.BASE64.decode("SECRET-KEY");
         return Keys.hmacShaKeyFor(key);
     }
-    private String extractUserName(String token){
+    public String extractUserName(String token){
         return extractClaim(token, Claims::getSubject);
     }
 
