@@ -24,6 +24,14 @@ public class JWTServiceImpl {
                 .compact();
     }
 
+    private Claims extractAllClaims(String token){
+        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
+    }
+
+    private Key getSignKey(){
+        byte[] key = Decoders.BASE64.decode("SECRET-KEY");
+        return Keys.hmacShaKeyFor(key);
+    }
     private String extractUserName(String token){
         return extractClaim(token, Claims::getSubject);
     }
@@ -33,13 +41,12 @@ public class JWTServiceImpl {
         return claimsResolvers.apply(claims);
     }
 
-    private Claims extractAllClaims(String token){
-        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
+    public boolean isTokenValid(String token, UserDetails userDetails){
+        final String username = extractUserName(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-
-    private Key getSignKey(){
-        byte[] key = Decoders.BASE64.decode("SECRET-KEY");
-        return Keys.hmacShaKeyFor(key);
+    private boolean isTokenExpired(String token){
+        return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 }

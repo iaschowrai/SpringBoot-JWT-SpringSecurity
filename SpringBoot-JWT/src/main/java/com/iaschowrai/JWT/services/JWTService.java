@@ -8,5 +8,7 @@ public interface JWTService {
 
     String generateToken(UserDetails userDetails);
 
+    boolean isTokenValid(String token, UserDetails userDetails);
+
 }
 
