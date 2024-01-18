@@ -18,8 +18,6 @@ import java.util.function.Function;
 @Service
 public class JWTServiceImpl implements JWTService {
 
-
-
     public String generateToken(UserDetails userDetails){
         return Jwts.builder().setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))

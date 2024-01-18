@@ -1,6 +1,7 @@
 package com.iaschowrai.JWT.services.impl;
 
 import com.iaschowrai.JWT.dto.JwtAuthenticationResponse;
+import com.iaschowrai.JWT.dto.RefreshTokenRequest;
 import com.iaschowrai.JWT.dto.SignInRequest;
 import com.iaschowrai.JWT.dto.SignUpRequest;
 import com.iaschowrai.JWT.entities.Role;
@@ -60,5 +61,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // You can log the exception or handle it in an appropriate way
             throw new RuntimeException("Error during authentication", e);
         }
+    }
+
+    public JwtAuthenticationResponse refreshToken (RefreshTokenRequest refreshTokenRequest){
+        String userEmail = jwtService.extractUserName(refreshTokenRequest.getToken());
+
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        if(jwtService.isTokenValid(refreshTokenRequest.getToken(), user)){
+            var jwt = jwtService.generateToken(user);
+
+            JwtAuthenticationResponse jwtAuthenticationResponse = new JwtAuthenticationResponse();
+
+            jwtAuthenticationResponse.setToken(jwt);
+            jwtAuthenticationResponse.setRefreshToken(refreshTokenRequest.getToken());
+            return jwtAuthenticationResponse;
+        }
+        return null;
     }
 }

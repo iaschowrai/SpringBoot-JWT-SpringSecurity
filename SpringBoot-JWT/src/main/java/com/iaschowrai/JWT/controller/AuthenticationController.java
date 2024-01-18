@@ -2,6 +2,7 @@ package com.iaschowrai.JWT.controller;
 
 
 import com.iaschowrai.JWT.dto.JwtAuthenticationResponse;
+import com.iaschowrai.JWT.dto.RefreshTokenRequest;
 import com.iaschowrai.JWT.dto.SignInRequest;
 import com.iaschowrai.JWT.dto.SignUpRequest;
 import com.iaschowrai.JWT.entities.User;
@@ -28,5 +29,10 @@ public class AuthenticationController {
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SignInRequest signInRequest){
         return ResponseEntity.ok(authenticationService.signin(signInRequest));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest){
+        return ResponseEntity.ok(authenticationService.refreshToken(refreshTokenRequest));
     }
 }
